@@ -1,0 +1,6 @@
+[component]
+name = "SigmaOS-state-of-components"
+tier = 4
+description = "System component telemetry, package dependency graph, and version state checker"
+contracts = ['state-of-components', 'dependency-graph-visualizer', 'health-reporter']
+upstream_inspirations = ['https://github.com/omacom/state-of-omarchy']

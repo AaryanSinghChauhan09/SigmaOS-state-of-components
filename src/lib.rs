@@ -1,20 +1,35 @@
-//! SigmaOS State of Components
-//!
-//! Component health dashboard for SigmaOS. Aggregates build status, test
-//! coverage, and dependency health across all SigmaOS components.
-//!
-//! # Modules
-//!
-//! - [`dashboard`]: Rendering and aggregation of component health data.
-//! - [`health`]: Health check definitions and per-component status evaluation.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ComponentState {
+    pub name: String,
+    pub version: String,
+    pub is_healthy: bool,
+}
 
-pub mod dashboard;
-pub mod health;
+#[derive(Debug, Default)]
+pub struct SystemHealthReporter {
+    components: Vec<ComponentState>,
+}
 
-/// Initialize the state-of-components subsystem.
-///
-/// Call once at startup to load component registry and configure
-/// data sources for CI, coverage, and dependency health.
-pub fn init() {
-    // TODO: load component registry, configure health data sources
+impl SystemHealthReporter {
+    pub fn new() -> Self { Self { components: Vec::new() } }
+    pub fn register(&mut self, name: &str, ver: &str, healthy: bool) {
+        self.components.push(ComponentState { name: name.into(), version: ver.into(), is_healthy: healthy });
+    }
+    pub fn all_healthy(&self) -> bool {
+        self.components.iter().all(|c| c.is_healthy)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_system_health_reporter_aaa() {
+        // Arrange
+        let mut reporter = SystemHealthReporter::new();
+        reporter.register("SigmaOS-kernel", "1.0.0", true);
+        reporter.register("SigmaOS-shell", "1.0.0", true);
+        // Act & Assert
+        assert!(reporter.all_healthy());
+    }
 }
